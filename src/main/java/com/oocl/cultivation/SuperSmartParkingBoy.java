@@ -15,6 +15,6 @@ public class SuperSmartParkingBoy extends ParkingBoy{
     public void chooseParkingLot() {
         super.setParkingLot(super.getParkingLotList().stream()
                 .reduce((a, b) -> a.getAvailableParkingPosition()/a.getCapacity() > b.getAvailableParkingPosition()/b.getCapacity() ? a : b)
-                .get());
+                .orElse(super.getParkingLot()));
     }
 }

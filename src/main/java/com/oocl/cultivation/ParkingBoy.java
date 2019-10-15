@@ -2,27 +2,24 @@ package com.oocl.cultivation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ParkingBoy{
+    public ParkingLot getParkingLot() {
+        return parkingLot;
+    }
+
     private ParkingLot parkingLot;
     private List<ParkingLot> parkingLotList = new ArrayList<>();
 
     public ParkingBoy(ParkingLot parkingLot) {
         this.parkingLot = parkingLot;
-        if(this.parkingLotList.isEmpty()) {
-            this.parkingLotList.add(parkingLot);
-        }
+        this.parkingLotList.add(parkingLot);
     }
 
     public ParkingBoy(List<ParkingLot> parkingLotList) {
         this.parkingLotList = parkingLotList;
-        if(parkingLot == null) {
-            this.parkingLot = parkingLotList.get(0);
-        }
-    }
-
-    public ParkingLot getParkingLot() {
-        return parkingLot;
+        this.parkingLot = parkingLotList.get(0);
     }
 
     public List<ParkingLot> getParkingLotList() {
@@ -36,26 +33,16 @@ public class ParkingBoy{
         }
     }
 
-    public void setParkingLotList(List<ParkingLot> parkingLotList) {
-        this.parkingLotList = parkingLotList;
-        if(parkingLot == null) {
-            this.parkingLot = parkingLotList.get(0);
-        }
-    }
-
     public ParkingTicket park(Car car) {
         chooseParkingLot();
         return parkingLot.parkCar(car);
     }
 
     public Car fetch(ParkingTicket ticket) {
-        for(ParkingLot tempParkingLot : parkingLotList){
-            Car car = tempParkingLot.fetchCar(ticket);
-            if(car != null){
-                return car;
-            }
-        }
-        return null;
+      return Objects.requireNonNull(parkingLotList.stream().
+              filter(a -> a.getCars().containsKey(ticket)).
+              findFirst().
+              orElse(this.parkingLot)).fetchCar(ticket);
     }
 
     public void chooseParkingLot() {
